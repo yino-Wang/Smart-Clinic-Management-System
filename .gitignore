@@ -1,0 +1,17 @@
+# ===== .NET =====
+bin/
+obj/
+.vs/
+*.user
+*.suo
+*.cache
+*.log
+
+# ===== Node / React =====
+node_modules/
+dist/
+.env
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
