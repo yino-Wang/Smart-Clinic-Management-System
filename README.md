@@ -22,11 +22,11 @@ A full-stack clinic management system built with **ASP.NET Core Web API** and **
 - Modular project structure
 
 ## Project Structure
-clinicflow
-├─ backend
-│ └─ ClinicFlow.Api
-├─ frontend
-│ └─ clinicflow-web
+- clinicflow
+- ├─ backend
+- │ └─ ClinicFlow.Api
+- ├─ frontend
+- │ └─ clinicflow-web
 
 
 ## Getting Started
@@ -39,6 +39,7 @@ dotnet run
 cd frontend/clinicflow-web
 npm install
 npm run dev
+```
 
 Author
 
