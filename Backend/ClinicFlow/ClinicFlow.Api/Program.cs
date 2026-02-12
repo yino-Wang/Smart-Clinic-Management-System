@@ -1,7 +1,13 @@
+using ClinicFlow.Api.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Controllers
 builder.Services.AddControllers();
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlite("Data Source=clinicflow.db"));
 
 // Swagger
 builder.Services.AddEndpointsApiExplorer();

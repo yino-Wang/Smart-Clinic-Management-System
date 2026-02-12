@@ -16,10 +16,10 @@ A full-stack clinic management system built with **ASP.NET Core Web API** and **
 - Axios
 
 ## Features
-- Health check API
-- Frontend–backend integration
-- Swagger API documentation
-- Modular project structure
+- Create Appointment
+- Delete Appointment
+- Update Status
+- Validation (EndTime > StartTime)
 
 ## Project Structure
 - clinicflow
