@@ -16,10 +16,21 @@ A full-stack clinic management system built with **ASP.NET Core Web API** and **
 - Axios
 
 ## Features
-- Create Appointment
-- Delete Appointment
-- Update Status
-- Validation (EndTime > StartTime)
+### Role-Based Authorization
+- Admin : View, Create, Update, Delete appointments
+User
+- User : View and Update status only
+#### SecurityFlow
+- User Login
+- Receive JWT
+- Store in localStorage
+- Attach to every API request
+- Backend validates token
+- Authorize based on role
+### Create Appointment
+### Delete Appointment
+### Update Status
+### Validation (EndTime > StartTime)
 
 ## Project Structure
 - clinicflow
