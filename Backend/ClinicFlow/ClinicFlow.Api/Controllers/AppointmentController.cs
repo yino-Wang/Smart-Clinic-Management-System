@@ -100,6 +100,7 @@ public class AppointmentsController : ControllerBase
         return CreatedAtAction(nameof(Get), new { id = input.Id }, input);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {

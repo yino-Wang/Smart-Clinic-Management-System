@@ -6,6 +6,8 @@ import {
   getAppointments,
 } from "../src/api/appointments"
 import { deleteAppointment, updateAppointment } from "../src/api/appointments";
+import Login from "./components/login";
+
 
 function toLocalInputValue(d: Date) {
   // datetime-local : "YYYY-MM-DDTHH:mm"
@@ -19,6 +21,10 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState<Appointment[]>([]);
   const [error, setError] = useState<string>("");
+  const [authed, setAuthed] = useState(!!localStorage.getItem("accessToken"));
+
+  const [role, setRole] = useState(localStorage.getItem("role") || "user"); // default to "user" if not set
+  const isAdmin = (role || "").toLowerCase() === "admin";
 
   // form state with default startTime = now + 10min, endTime = now + 40min
   const now = new Date();
@@ -45,8 +51,8 @@ export default function App() {
   }
 
   useEffect(() => {
-    refresh();
-  }, []);
+    if(authed) refresh();
+  }, [authed]);
 
   async function onSubmit() {
     setError("");
@@ -81,6 +87,13 @@ export default function App() {
       setError(String(msg));
     }
   }
+
+  //token validation
+  if (!authed) 
+    return <Login onDone={() => {
+      setAuthed(true);
+      setRole(localStorage.getItem("role") || "user");
+    }} />;
 
   return (
     <div style={{ maxWidth: 1000, margin: "0 auto", padding: 32 }}>
@@ -273,32 +286,41 @@ export default function App() {
                     </select>
                 </td>
                 <td style={{ padding: 10, borderBottom: "1px solid #eee" }}>
-                  <button
-                    onClick={async () => {
-                      if (!confirm(`Delete appointment #${a.id}?`)) return;
-                      try {
-                        await deleteAppointment(a.id);
-                        await refresh();
-                      } catch (err) {
-                        console.error(err);
-                        setError("Failed to delete appointment");
-                      }
-                    }}
-                    style={{
-                      padding: "6px 10px",
-                      borderRadius: 8,
-                      border: "1px solid #d33",
-                      cursor: "pointer",
-                    }}
-                  >
-                    Delete
-                  </button>
+                  {isAdmin && (
+                    <button
+                      onClick={async () => {
+                        if (!confirm(`Delete appointment #${a.id}?`)) return;
+                        try {
+                          await deleteAppointment(a.id);
+                          await refresh();
+                        } catch (err) {
+                          console.error(err);
+                          setError("Failed to delete appointment");
+                        }
+                      }}
+                      style={{
+                        padding: "6px 10px",
+                        borderRadius: 8,
+                        border: "1px solid #d33",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Delete
+                    </button>
+                  )}
+                  
                 </td>
               </tr>
+              
             ))}
           </tbody>
         </table>
       )}
+
+      <button style={{ marginTop: 20, color: "black", backgroundColor:"lightgray"}} onClick={() => { localStorage.clear(); window.location.reload(); }}>
+        Logout
+      </button>
+
     </div>
   );
 }
