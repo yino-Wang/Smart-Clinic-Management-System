@@ -1,18 +1,18 @@
 import { useState } from "react";
-import { login } from "../api/auth";
+import { login as loginApi } from "../api/auth";
+import { useAuth } from "../context/authContext";
 
-export default function Login({ onDone }: { onDone: () => void }) {
+export default function Login() {
   const [username, setUsername] = useState("admin");
   const [password, setPassword] = useState("admin123");
   const [error, setError] = useState("");
+  const {login} = useAuth();
 
   async function onSubmit() {
     setError("");
     try {
-      const data = await login(username, password);
-      localStorage.setItem("accessToken", data.accessToken);
-      localStorage.setItem("role", data.role);
-      onDone();
+      const data = await loginApi(username, password);
+      login(data.accessToken, data.role);
     } catch (e: any) {
       setError(e?.response?.data ?? "Login failed");
     }

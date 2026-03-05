@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
+import Login from "./components/login";
+import { useAuth } from "./context/authContext"; 
+
 import {
   Appointment,
   CreateAppointmentDto,
   createAppointment,
+  deleteAppointment,
   getAppointments,
-} from "../src/api/appointments"
-import { deleteAppointment, updateAppointment } from "../src/api/appointments";
-import Login from "./components/login";
-
+  updateAppointment,
+} from "./api/appointments"; 
 
 function toLocalInputValue(d: Date) {
-  // datetime-local : "YYYY-MM-DDTHH:mm"
   const pad = (n: number) => String(n).padStart(2, "0");
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(
     d.getHours()
@@ -18,22 +19,24 @@ function toLocalInputValue(d: Date) {
 }
 
 export default function App() {
+  // get auth state and actions from context
+  const { isAuthenticated, role, logout } = useAuth();
+  const isAdmin = (role || "").trim().toLowerCase() === "admin";
+
+  // hook state for appointments, form, and error
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState<Appointment[]>([]);
   const [error, setError] = useState<string>("");
-  const [authed, setAuthed] = useState(!!localStorage.getItem("accessToken"));
 
-  const [role, setRole] = useState(localStorage.getItem("role") || "user"); // default to "user" if not set
-  const isAdmin = (role || "").toLowerCase() === "admin";
-
-  // form state with default startTime = now + 10min, endTime = now + 40min
-  const now = new Date();
-  const [form, setForm] = useState<CreateAppointmentDto>({
-    patientName: "",
-    doctorName: "",
-    startTime: new Date(now.getTime() + 10 * 60 * 1000).toISOString(),
-    endTime: new Date(now.getTime() + 40 * 60 * 1000).toISOString(),
-    status: "Scheduled",
+  const [form, setForm] = useState<CreateAppointmentDto>(() => {
+    const now = new Date();
+    return {
+      patientName: "",
+      doctorName: "",
+      startTime: new Date(now.getTime() + 10 * 60 * 1000).toISOString(),
+      endTime: new Date(now.getTime() + 40 * 60 * 1000).toISOString(),
+      status: "Scheduled",
+    };
   });
 
   async function refresh() {
@@ -41,6 +44,7 @@ export default function App() {
     setError("");
     try {
       const data = await getAppointments();
+      console.log("appointments raw:", data, Array.isArray(data));
       setItems(data);
     } catch (e: any) {
       console.error(e);
@@ -51,8 +55,8 @@ export default function App() {
   }
 
   useEffect(() => {
-    if(authed) refresh();
-  }, [authed]);
+    if (isAuthenticated) refresh();
+  }, [isAuthenticated]);
 
   async function onSubmit() {
     setError("");
@@ -66,19 +70,12 @@ export default function App() {
       return;
     }
 
-
     try {
       await createAppointment(form);
-      // clear patientName and doctorName but keep the last selected times and status for faster entry
-      setForm((prev) => ({
-        ...prev,
-        patientName: "",
-        doctorName: "",
-      }));
+      setForm((prev) => ({ ...prev, patientName: "", doctorName: "" }));
       await refresh();
     } catch (e: any) {
       console.error(e);
-      // error message from backend validation or other issues
       const msg =
         e?.response?.data?.title ||
         e?.response?.data ||
@@ -88,18 +85,16 @@ export default function App() {
     }
   }
 
-  //token validation
-  if (!authed) 
-    return <Login onDone={() => {
-      setAuthed(true);
-      setRole(localStorage.getItem("role") || "user");
-    }} />;
+  // ✅ 未登录就显示 Login（不再传 onDone）
+  if (!isAuthenticated) {
+    return <Login />;
+  }
 
   return (
     <div style={{ maxWidth: 1000, margin: "0 auto", padding: 32 }}>
       <h1 style={{ marginBottom: 8 }}>ClinicFlow</h1>
       <p style={{ marginTop: 0, opacity: 0.75 }}>
-        Please input your details to create a new appointment. 
+        Please input your details to create a new appointment.
       </p>
 
       <div
@@ -108,12 +103,17 @@ export default function App() {
           border: "1px solid #ddd",
           borderRadius: 12,
           marginBottom: 20,
-          maxWidth: 1000,
         }}
       >
         <h2 style={{ marginTop: 0 }}>New Appointment</h2>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: 20,
+          }}
+        >
           <div>
             <label>Patient Name</label>
             <input
@@ -233,33 +233,29 @@ export default function App() {
         >
           <thead>
             <tr>
-              {["Id", "Patient", "Doctor", "Start", "End", "Status", "Actions"].map((h) => (
-                <th
-                  key={h}
-                  style={{
-                    textAlign: "left",
-                    padding: 10,
-                    borderBottom: "1px solid #ddd",
-                    background: "#fafafa",
-                  }}
-                >
-                  {h}
-                </th>
-              ))}
+              {["Id", "Patient", "Doctor", "Start", "End", "Status", "Actions"].map(
+                (h) => (
+                  <th
+                    key={h}
+                    style={{
+                      textAlign: "left",
+                      padding: 10,
+                      borderBottom: "1px solid #ddd",
+                      background: "#fafafa",
+                    }}
+                  >
+                    {h}
+                  </th>
+                )
+              )}
             </tr>
           </thead>
           <tbody>
             {items.map((a) => (
               <tr key={a.id}>
-                <td style={{ padding: 10, borderBottom: "1px solid #eee" }}>
-                  {a.id}
-                </td>
-                <td style={{ padding: 10, borderBottom: "1px solid #eee" }}>
-                  {a.patientName}
-                </td>
-                <td style={{ padding: 10, borderBottom: "1px solid #eee" }}>
-                  {a.doctorName}
-                </td>
+                <td style={{ padding: 10, borderBottom: "1px solid #eee" }}>{a.id}</td>
+                <td style={{ padding: 10, borderBottom: "1px solid #eee" }}>{a.patientName}</td>
+                <td style={{ padding: 10, borderBottom: "1px solid #eee" }}>{a.doctorName}</td>
                 <td style={{ padding: 10, borderBottom: "1px solid #eee" }}>
                   {new Date(a.startTime).toLocaleString()}
                 </td>
@@ -267,26 +263,25 @@ export default function App() {
                   {new Date(a.endTime).toLocaleString()}
                 </td>
                 <td style={{ padding: 10, borderBottom: "1px solid #eee" }}>
-                    <select
-                      value={a.status}
-                      onChange={async (e) => {
-                        const next = e.target.value;
-                        try {
-                          await updateAppointment(a.id, next);
-                          await refresh();
-                        } catch (err) {
-                          console.error(err);
-                          setError("Failed to update status");
-                        }
-                      }}
-                    >
-                      <option value="Scheduled">Scheduled</option>
-                      <option value="Completed">Completed</option>
-                      <option value="Cancelled">Cancelled</option>
-                    </select>
+                  <select
+                    value={a.status}
+                    onChange={async (e) => {
+                      try {
+                        await updateAppointment(a.id, e.target.value);
+                        await refresh();
+                      } catch (err) {
+                        console.error(err);
+                        setError("Failed to update status");
+                      }
+                    }}
+                  >
+                    <option value="Scheduled">Scheduled</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Cancelled">Cancelled</option>
+                  </select>
                 </td>
                 <td style={{ padding: 10, borderBottom: "1px solid #eee" }}>
-                  {isAdmin && (
+                  {isAdmin ? (
                     <button
                       onClick={async () => {
                         if (!confirm(`Delete appointment #${a.id}?`)) return;
@@ -307,18 +302,25 @@ export default function App() {
                     >
                       Delete
                     </button>
+                  ) : (
+                    <span style={{ opacity: 0.6 }}>—</span>
                   )}
-                  
+
                 </td>
               </tr>
-              
+
             ))}
           </tbody>
         </table>
       )}
 
-      <button style={{ marginTop: 20, color: "black", backgroundColor:"lightgray"}} onClick={() => { localStorage.clear(); window.location.reload(); }}>
+      {/* ✅ 新方式：用 AuthContext logout，不要 reload */}
+      <button
+        style={{ marginTop: 20, color: "black", backgroundColor: "lightgray" }}
+        onClick={logout}
+      >
         Logout
+
       </button>
 
     </div>
