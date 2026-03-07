@@ -38,6 +38,10 @@ A full-stack clinic management system built with **ASP.NET Core Web API** and **
 - **Create Appointment**: Dedicated form interface with validation (EndTime > StartTime).
 - **Manage Appointments**: Update status or instantly drop (delete) appointments.
 
+### Patients Management
+- **List View**: Display all registered patients in a clean, modern table matching the app's visual identity.
+- **Create Patient**: Highly polished data entry form for easily adding new patients into the clinic domain.
+
 
 ## Project Structure
 - clinicflow
