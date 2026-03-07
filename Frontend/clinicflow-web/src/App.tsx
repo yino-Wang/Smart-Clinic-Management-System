@@ -9,6 +9,8 @@ import Patients from "./pages/patients";
 import Doctors from "./pages/doctors";
 import Reports from "./pages/reports";
 import Settings from "./pages/settings";
+import PatientsPage from "./pages/patients";
+import NewPatient from "./pages/newPatient";
 
 export default function App() {
   const { isAuthenticated } = useAuth();
@@ -28,6 +30,8 @@ export default function App() {
         <Route path="/reports" element={<Reports />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="/patients" element={<PatientsPage />} />
+        <Route path="/patients/new" element={<NewPatient />} />
       </Routes>
     </Layout>
   );
