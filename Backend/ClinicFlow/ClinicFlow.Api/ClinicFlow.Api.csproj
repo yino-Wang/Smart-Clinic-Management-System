@@ -17,8 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Application\DTOs\" />
-    <Folder Include="Domain\Entities\" />
     <Folder Include="Infrastructure\" />
     <Folder Include="Common\" />
   </ItemGroup>
