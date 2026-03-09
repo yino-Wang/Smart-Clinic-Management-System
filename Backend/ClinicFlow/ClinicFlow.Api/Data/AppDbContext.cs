@@ -1,3 +1,4 @@
+using ClinicFlow.Api.Domain.Entities;
 using ClinicFlow.Api.Domain.Entities.Patient;
 using ClinicFlow.Api.Models;
 using Microsoft.EntityFrameworkCore;
@@ -10,4 +11,7 @@ public class AppDbContext : DbContext
 
     public DbSet<Appointment> Appointments => Set<Appointment>();
     public DbSet<Patient> Patients => Set<Patient>();
+
+    public DbSet<Doctor> Doctors => Set<Doctor>();
+
 }

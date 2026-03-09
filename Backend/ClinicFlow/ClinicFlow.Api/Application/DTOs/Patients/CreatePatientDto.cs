@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ClinicFlow.Api.Application.DTOs
+namespace ClinicFlow.Api.Application.DTOs.Patients
 {
     public class CreatePatientDto
     {

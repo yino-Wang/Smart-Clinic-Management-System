@@ -1,9 +1,9 @@
 ﻿using ClinicFlow.Api.Data;
-using ClinicFlow.Api.Application.DTOs;
 using ClinicFlow.Api.Models;
 using ClinicFlow.Api.Domain.Entities.Patient;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ClinicFlow.Api.Application.DTOs.Patients;
 
 namespace ClinicFlow.Api.Controllers
 {
