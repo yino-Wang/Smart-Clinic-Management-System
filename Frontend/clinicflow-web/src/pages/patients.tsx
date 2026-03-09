@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { getPatients, Patient } from "../api/patients";
+import { getPatients, deletePatient, Patient } from "../api/patients";
 import Topbar from "../components/topbar";
 import { useNavigate } from "react-router-dom";
 
@@ -8,6 +8,7 @@ export default function PatientsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
+  const [viewPatient, setViewPatient] = useState<Patient | null>(null);
 
   const navigate = useNavigate();
 
@@ -30,6 +31,17 @@ export default function PatientsPage() {
     loadPatients();
   }, []);
 
+  async function handleDelete(id: number) {
+    if (!window.confirm("Are you sure you want to delete this patient?")) return;
+    try {
+      await deletePatient(id);
+      setPatients((prev) => prev.filter((p) => p.id !== id));
+    } catch (err) {
+      console.error("Failed to delete patient:", err);
+      alert("Failed to delete patient.");
+    }
+  }
+
   const filteredPatients = useMemo(() => {
     const keyword = search.trim().toLowerCase();
 
@@ -40,7 +52,7 @@ export default function PatientsPage() {
         patient.name.toLowerCase().includes(keyword) ||
         patient.phone.toLowerCase().includes(keyword) ||
         patient.email.toLowerCase().includes(keyword) ||
-        patient.gender.toLowerCase().includes(keyword)
+        patient.gender.toLowerCase().startsWith(keyword)
       );
     });
   }, [patients, search]);
@@ -133,10 +145,19 @@ export default function PatientsPage() {
                       </td>
                       <td style={{ padding: "16px", fontSize: "14px" }}>
                         <div style={{ display: "flex", gap: "8px" }}>
-                          <button style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", background: "white", color: "#2b5876", cursor: "pointer", fontWeight: 600, fontSize: "13px", transition: "all 0.2s" }}>
+                          <button 
+                            onClick={() => setViewPatient(patient)}
+                            style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", background: "white", color: "#2b5876", cursor: "pointer", fontWeight: 600, fontSize: "13px", transition: "all 0.2s" }}>
                             View
                           </button>
-                          <button style={{ padding: "6px 12px", borderRadius: "6px", border: "none", background: "#fee2e2", color: "#ef4444", cursor: "pointer", fontWeight: 600, fontSize: "13px", transition: "all 0.2s" }}>
+                          <button 
+                            onClick={() => navigate(`/patients/${patient.id}/edit`)}
+                            style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", background: "white", color: "#2b5876", cursor: "pointer", fontWeight: 600, fontSize: "13px", transition: "all 0.2s" }}>
+                            Edit
+                          </button>
+                          <button 
+                            onClick={() => handleDelete(patient.id)}
+                            style={{ padding: "6px 12px", borderRadius: "6px", border: "none", background: "#fee2e2", color: "#ef4444", cursor: "pointer", fontWeight: 600, fontSize: "13px", transition: "all 0.2s" }}>
                             Delete
                           </button>
                         </div>
