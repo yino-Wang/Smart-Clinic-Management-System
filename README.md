@@ -39,8 +39,14 @@ A full-stack clinic management system built with **ASP.NET Core Web API** and **
 - **Manage Appointments**: Update status or instantly drop (delete) appointments.
 
 ### Patients Management
-- **List View**: Display all registered patients in a clean, modern table matching the app's visual identity.
+- **List View**: Display all registered patients in a clean, modern table matching the app's visual identity. Includes search/filtering by name, phone, email, and gender.
 - **Create Patient**: Highly polished data entry form for easily adding new patients into the clinic domain.
+- **Edit & Delete**: Full lifecycle management of patient profiles, integrated seamlessly into the list view.
+
+### Doctors Management
+- **List View**: Staff directory with profile photos, availability schedules, contact information and specialties.
+- **Create Doctor**: Form optimized for entering staff details, including URL attachment for profile pictures.
+- **Edit & Delete**: Robust management capabilities to keep clinic staff data synced and updated.
 
 
 ## Project Structure
