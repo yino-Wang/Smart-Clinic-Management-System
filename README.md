@@ -48,6 +48,11 @@ A full-stack clinic management system built with **ASP.NET Core Web API** and **
 - **Create Doctor**: Form optimized for entering staff details, including URL attachment for profile pictures.
 - **Edit & Delete**: Robust management capabilities to keep clinic staff data synced and updated.
 
+## TODO 🚀
+- **Smart Appointment Scheduling**:
+  - Integrate Doctor selection dropdown in the "New Appointment" form.
+  - Implement backend validation to prevent double-booking (time slot conflicts) for the same doctor.
+  - Enhance frontend to gracefully handle and display booking conflict errors.
 
 ## Project Structure
 - clinicflow
