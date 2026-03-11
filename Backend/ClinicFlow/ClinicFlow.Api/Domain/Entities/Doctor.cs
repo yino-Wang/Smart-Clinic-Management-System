@@ -14,6 +14,8 @@
 
         public string Availability { get; set; } = "";
 
+        public string PhotoUrl { get; set; }
+
         public string? Notes { get; set; }
     }
 }

@@ -32,6 +32,7 @@ namespace ClinicFlow.Api.Controllers
                 Phone = d.Phone,
                 Email = d.Email,
                 Availability = d.Availability,
+                PhotoUrl = d.PhotoUrl,
                 Notes = d.Notes
             })
             .ToListAsync();
@@ -57,6 +58,7 @@ namespace ClinicFlow.Api.Controllers
                 Phone = doctor.Phone,
                 Email = doctor.Email,
                 Availability = doctor.Availability,
+                PhotoUrl = doctor.PhotoUrl,
                 Notes = doctor.Notes
             };
 
@@ -82,6 +84,7 @@ namespace ClinicFlow.Api.Controllers
                 Phone = dto.Phone,
                 Email = dto.Email,
                 Availability = dto.Availability,
+                PhotoUrl = dto.PhotoUrl,
                 Notes = dto.Notes
             };
 
@@ -96,6 +99,7 @@ namespace ClinicFlow.Api.Controllers
                 Phone = doctor.Phone,
                 Email = doctor.Email,
                 Availability = doctor.Availability,
+                PhotoUrl = doctor.PhotoUrl,
                 Notes = doctor.Notes
             };
 
@@ -117,6 +121,7 @@ namespace ClinicFlow.Api.Controllers
             doctor.Phone = dto.Phone;
             doctor.Email = dto.Email;
             doctor.Availability = dto.Availability;
+            doctor.PhotoUrl = dto.PhotoUrl;
             doctor.Notes = dto.Notes;
 
             await _db.SaveChangesAsync();
@@ -129,6 +134,7 @@ namespace ClinicFlow.Api.Controllers
                 Phone = doctor.Phone,
                 Email = doctor.Email,
                 Availability = doctor.Availability,
+                PhotoUrl = doctor.PhotoUrl,
                 Notes = doctor.Notes
             };
 
