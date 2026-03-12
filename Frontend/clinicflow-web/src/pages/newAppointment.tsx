@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import Topbar from "../components/topbar";
 import { CreateAppointmentDto, createAppointment, getDoctorBookedSlots } from "../api/appointments"; 
 import { getDoctors, Doctor } from "../api/doctor";
+import { getPatients, Patient } from "../api/patients";
 
 function toLocalInputValue(d: Date) {
   const pad = (n: number) => String(n).padStart(2, "0");
@@ -20,6 +21,7 @@ export default function NewAppointment() {
   const [loading, setLoading] = useState(false);
   
   const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [patients, setPatients] = useState<Patient[]>([]);
   const [selectedDate, setSelectedDate] = useState(toLocalDateString(new Date()));
   const [bookedSlots, setBookedSlots] = useState<{startTime: string, endTime: string}[]>([]);
 
@@ -34,10 +36,19 @@ export default function NewAppointment() {
     };
   });
 
-  // Load doctors on mount
+  // Load doctors and patients on mount
   useEffect(() => {
-    getDoctors().then(setDoctors).catch(console.error);
+    Promise.all([getDoctors(), getPatients()])
+      .then(([docs, pats]) => {
+        setDoctors(docs);
+        setPatients(pats);
+      })
+      .catch(console.error);
   }, []);
+
+  const selectedPatientData = useMemo(() => {
+    return patients.find(p => p.name === form.patientName);
+  }, [form.patientName, patients]);
 
   // Watch for doctor + date selection to fetch booked slots
   useEffect(() => {
@@ -87,7 +98,28 @@ export default function NewAppointment() {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
             <div style={{ gridColumn: "1 / -1" }}>
               <label style={{ display: "block", marginBottom: 8, fontWeight: 500, color: "#334155" }}>Patient Name</label>
-              <input value={form.patientName} onChange={(e) => setForm(p => ({...p, patientName: e.target.value}))} style={{ width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid #cbd5e1", boxSizing: "border-box", outline: "none", fontSize: "14px" }} placeholder="e.g., Yino" />
+              <select
+                value={form.patientName}
+                onChange={(e) => setForm(p => ({...p, patientName: e.target.value}))}
+                style={{ width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid #cbd5e1", boxSizing: "border-box", outline: "none", fontSize: "14px", backgroundColor: "white", cursor: "pointer" }}
+              >
+                <option value="">-- Select an Existing Patient --</option>
+                {patients.map((p) => (
+                  <option key={p.id} value={p.name}>
+                    {p.name}
+                  </option>
+                ))}
+              </select>
+              
+              {/* Display selected patient details */}
+              {selectedPatientData && (
+                <div style={{ marginTop: "12px", padding: "12px 16px", backgroundColor: "#f8fafc", borderRadius: "8px", border: "1px dashed #cbd5e1", fontSize: "13px", color: "#475569", display: "flex", gap: "16px", flexWrap: "wrap" }}>
+                  <span><strong>Email:</strong> {selectedPatientData.email || "N/A"}</span>
+                  <span><strong>Phone:</strong> {selectedPatientData.phone || "N/A"}</span>
+                  <span><strong>Gender:</strong> {selectedPatientData.gender}</span>
+                  <span><strong>DOB:</strong> {selectedPatientData.dateOfBirth ? selectedPatientData.dateOfBirth.substring(0, 10) : "N/A"}</span>
+                </div>
+              )}
             </div>
             
             <div style={{ gridColumn: "1 / -1" }}>
