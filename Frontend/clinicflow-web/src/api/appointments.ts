@@ -23,6 +23,7 @@ export async function deleteAppointment(id: number) {
 export interface Appointment {
   id: number;
   patientName: string;
+  doctorId: number;
   doctorName: string;
   startTime: string;
   endTime: string;
@@ -31,8 +32,14 @@ export interface Appointment {
 
 export interface CreateAppointmentDto {
   patientName: string;
-  doctorName: string;
+  doctorId: number | null;
   startTime: string;
   endTime: string;
   status: string;
+}
+
+export async function getDoctorBookedSlots(doctorId: number, date: string) {
+  // date format expected: YYYY-MM-DD
+  const res = await api.get(`/api/Appointments/doctor/${doctorId}/date/${date}`);
+  return res.data; // array of { startTime, endTime }
 }

@@ -1,30 +1,61 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Topbar from "../components/topbar";
-import { CreateAppointmentDto, createAppointment } from "../api/appointments"; 
+import { CreateAppointmentDto, createAppointment, getDoctorBookedSlots } from "../api/appointments"; 
+import { getDoctors, Doctor } from "../api/doctor";
 
 function toLocalInputValue(d: Date) {
   const pad = (n: number) => String(n).padStart(2, "0");
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
+function toLocalDateString(d: Date) {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
 export default function NewAppointment() {
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [selectedDate, setSelectedDate] = useState(toLocalDateString(new Date()));
+  const [bookedSlots, setBookedSlots] = useState<{startTime: string, endTime: string}[]>([]);
+
   const [form, setForm] = useState<CreateAppointmentDto>(() => {
     const now = new Date();
     return {
-      patientName: "", doctorName: "",
+      patientName: "", 
+      doctorId: null,
       startTime: new Date(now.getTime() + 10 * 60 * 1000).toISOString(),
       endTime: new Date(now.getTime() + 40 * 60 * 1000).toISOString(),
       status: "Scheduled",
     };
   });
 
+  // Load doctors on mount
+  useEffect(() => {
+    getDoctors().then(setDoctors).catch(console.error);
+  }, []);
+
+  // Watch for doctor + date selection to fetch booked slots
+  useEffect(() => {
+    if (form.doctorId && selectedDate) {
+      getDoctorBookedSlots(form.doctorId, selectedDate)
+        .then(setBookedSlots)
+        .catch((err) => {
+          console.error("Failed to load booked slots", err);
+          setBookedSlots([]); // Fallback
+        });
+    } else {
+      setBookedSlots([]);
+    }
+  }, [form.doctorId, selectedDate]);
+
   async function onSubmit() {
     setError("");
-    if (!form.patientName.trim() || !form.doctorName.trim()) { setError("PatientName and DoctorName are required."); return; }
+    if (!form.patientName.trim() || !form.doctorId) { setError("Patient Name and Doctor are required."); return; }
     if (new Date(form.endTime) <= new Date(form.startTime)) { setError("EndTime must be later than StartTime."); return; }
 
     setLoading(true);
@@ -32,11 +63,17 @@ export default function NewAppointment() {
       await createAppointment(form);
       navigate("/appointments");
     } catch (e: any) {
-      const msg = e?.response?.data?.title || e?.response?.data || e?.message || "Create failed";
+      const msg = e?.response?.data?.title || e?.response?.data?.message || e?.response?.data || e?.message || "Create failed";
       setError(String(msg));
     } finally {
       setLoading(false);
     }
+  }
+
+  function formatTimeOnly(isoString: string) {
+    const d = new Date(isoString);
+    const pad = (n: number) => String(n).padStart(2, "0");
+    return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
   }
 
   return (
@@ -54,9 +91,48 @@ export default function NewAppointment() {
             </div>
             
             <div style={{ gridColumn: "1 / -1" }}>
-              <label style={{ display: "block", marginBottom: 8, fontWeight: 500, color: "#334155" }}>Doctor Name</label>
-              <input value={form.doctorName} onChange={(e) => setForm(p => ({...p, doctorName: e.target.value}))} style={{ width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid #cbd5e1", boxSizing: "border-box", outline: "none", fontSize: "14px" }} placeholder="e.g., Dr Lee" />
+              <label style={{ display: "block", marginBottom: 8, fontWeight: 500, color: "#334155" }}>Doctor</label>
+              <select 
+                value={form.doctorId || ""} 
+                onChange={(e) => setForm(p => ({...p, doctorId: Number(e.target.value) || null}))} 
+                style={{ width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid #cbd5e1", boxSizing: "border-box", outline: "none", fontSize: "14px", backgroundColor: "white", cursor: "pointer" }}
+              >
+                <option value="">Select a Doctor</option>
+                {doctors.map(d => (
+                  <option key={d.id} value={d.id}>{d.name} {d.specialty ? `- ${d.specialty}` : ""}</option>
+                ))}
+              </select>
             </div>
+
+            <div style={{ gridColumn: "1 / -1" }}>
+              <label style={{ display: "block", marginBottom: 8, fontWeight: 500, color: "#334155" }}>Select Base Date</label>
+              <input 
+                type="date" 
+                value={selectedDate} 
+                onChange={(e) => setSelectedDate(e.target.value)} 
+                style={{ width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid #cbd5e1", boxSizing: "border-box", outline: "none", fontSize: "14px" }} 
+              />
+            </div>
+
+            {/* Display booked slots if any */}
+            {form.doctorId && selectedDate && (
+              <div style={{ gridColumn: "1 / -1", backgroundColor: "#f8fafc", padding: "16px", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
+                <p style={{ margin: "0 0 12px 0", fontWeight: 600, color: "#475569", fontSize: "14px" }}>
+                  Booked Time Slots for this Doctor on {selectedDate}:
+                </p>
+                {bookedSlots.length === 0 ? (
+                  <p style={{ margin: 0, color: "#10b981", fontSize: "14px" }}>All slots available</p>
+                ) : (
+                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                    {bookedSlots.map((slot, idx) => (
+                      <span key={idx} style={{ backgroundColor: "#fee2e2", color: "#dc2626", padding: "6px 12px", borderRadius: "6px", fontSize: "13px", fontWeight: 500, border: "1px solid #fecaca" }}>
+                        {formatTimeOnly(slot.startTime)} - {formatTimeOnly(slot.endTime)}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
 
             <div>
               <label style={{ display: "block", marginBottom: 8, fontWeight: 500, color: "#334155" }}>Start Time</label>
