@@ -98,6 +98,33 @@ public class AppointmentsController : ControllerBase
         return Ok(list);
     }
 
+    [HttpGet("doctor/{id:int}/date/{date}")]
+    public async Task<IActionResult> GetDoctorBookedSlots(int id, string date)
+    {
+        if (!DateTime.TryParse(date, out var targetDate))
+        {
+            return BadRequest("Invalid date format.");
+        }
+
+        var startOfDay = targetDate.Date;
+        var endOfDay = startOfDay.AddDays(1);
+
+        var bookedSlots = await _db.Appointments
+            .Where(a => a.DoctorId == id && 
+                        a.Status != "Cancelled" &&
+                        a.StartTime >= startOfDay && 
+                        a.StartTime < endOfDay)
+            .Select(a => new
+            {
+                a.StartTime,
+                a.EndTime
+            })
+            .OrderBy(a => a.StartTime)
+            .ToListAsync();
+
+        return Ok(bookedSlots);
+    }
+
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateAppointmentDto dto)
     {
