@@ -11,14 +11,46 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClinicFlow.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260311083255_AddPhotoUrlToDoctor")]
-    partial class AddPhotoUrlToDoctor
+    [Migration("20260312032633_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.3");
+
+            modelBuilder.Entity("ClinicFlow.Api.Domain.Entities.Appointment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("DoctorId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PatientName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoctorId");
+
+                    b.ToTable("Appointments");
+                });
 
             modelBuilder.Entity("ClinicFlow.Api.Domain.Entities.Doctor", b =>
                 {
@@ -93,36 +125,15 @@ namespace ClinicFlow.Api.Migrations
                     b.ToTable("Patients");
                 });
 
-            modelBuilder.Entity("ClinicFlow.Api.Models.Appointment", b =>
+            modelBuilder.Entity("ClinicFlow.Api.Domain.Entities.Appointment", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                    b.HasOne("ClinicFlow.Api.Domain.Entities.Doctor", "Doctor")
+                        .WithMany()
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<string>("DoctorName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("EndTime")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("PatientName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Appointments");
+                    b.Navigation("Doctor");
                 });
 #pragma warning restore 612, 618
         }

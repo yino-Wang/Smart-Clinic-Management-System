@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace ClinicFlow.Api.Models;
+namespace ClinicFlow.Api.Domain.Entities;
 
 public class Appointment
 {
@@ -11,8 +11,7 @@ public class Appointment
     public string PatientName { get; set; } = string.Empty;
 
     [Required]
-    [MaxLength(100)]
-    public string DoctorName { get; set; } = string.Empty;
+    public int DoctorId { get; set; }
 
     [Required]
     public DateTime StartTime { get; set; }
@@ -23,4 +22,6 @@ public class Appointment
     [Required]
     [MaxLength(30)]
     public string Status { get; set; } = "Scheduled";
+
+    public Doctor? Doctor { get; set; } //check relevant to doctorId
 }

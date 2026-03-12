@@ -1,6 +1,5 @@
 using ClinicFlow.Api.Domain.Entities;
 using ClinicFlow.Api.Domain.Entities.Patient;
-using ClinicFlow.Api.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ClinicFlow.Api.Data;

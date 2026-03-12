@@ -2,8 +2,6 @@
 using ClinicFlow.Api.Application.DTOs.Doctors;
 using ClinicFlow.Api.Data;
 using ClinicFlow.Api.Domain.Entities;
-using ClinicFlow.Api.Models;
-using ClinicFlow.Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,16 +23,16 @@ namespace ClinicFlow.Api.Controllers
         {
             var doctors = await _db.Doctors
                 .Select(d => new DoctorDto
-            {
-                Id = d.Id,
-                Name = d.Name,
-                Specialty = d.Specialty,
-                Phone = d.Phone,
-                Email = d.Email,
-                Availability = d.Availability,
-                PhotoUrl = d.PhotoUrl,
-                Notes = d.Notes
-            })
+                {
+                    Id = d.Id,
+                    Name = d.Name,
+                    Specialty = d.Specialty,
+                    Phone = d.Phone,
+                    Email = d.Email,
+                    Availability = d.Availability,
+                    PhotoUrl = d.PhotoUrl,
+                    Notes = d.Notes
+                })
             .ToListAsync();
 
             return Ok(doctors);
@@ -156,7 +154,45 @@ namespace ClinicFlow.Api.Controllers
 
             return NoContent();
         }
-    }
 
+        [HttpGet("{id}/availability")]
+        public async Task<ActionResult<DoctorAvailabilityDto>> CheckDocotorAvailability(
+            int id,
+            [FromQuery] DateTime startTime,
+            [FromQuery] DateTime endTime)
+        {
+            if (endTime <= startTime)
+            {
+                return BadRequest(new { message = "EndTime must be later than StartTime." });
+            }
+
+            var docotorExists = await _db.Doctors.AnyAsync(d => d.Id == id);
+            if (!docotorExists)
+            {
+                return NotFound(new { message = $"Doctor with id {id} not found." });
+            }
+
+            var hasConflict = await _db.Appointments
+                .Where(a => a.DoctorId == id
+                    && a.Status != "Cancelled"
+                    && (
+                        // new appointment start time is in the middle of an existing appointment
+                        (startTime >= a.StartTime && startTime < a.EndTime) ||
+                        // new appointment end time is in the middle of an existing appointment
+                        (endTime > a.StartTime && endTime <= a.EndTime) ||
+                        // new appointment completely overlaps an existing appointment
+                        (startTime <= a.StartTime && endTime >= a.EndTime)
+                    ))
+        .AnyAsync();
+            return Ok(new DoctorAvailabilityDto
+            {
+                DoctorId = id,
+                IsAvailable = !hasConflict,
+                StartTime = startTime,
+                EndTime = endTime
+            });
+        }
+
+    }
 }
 

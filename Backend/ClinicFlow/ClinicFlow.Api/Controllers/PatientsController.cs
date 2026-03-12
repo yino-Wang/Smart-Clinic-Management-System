@@ -1,5 +1,4 @@
 ﻿using ClinicFlow.Api.Data;
-using ClinicFlow.Api.Models;
 using ClinicFlow.Api.Domain.Entities.Patient;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

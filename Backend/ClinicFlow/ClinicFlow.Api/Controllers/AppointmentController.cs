@@ -1,13 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ClinicFlow.Api.Data;
-using ClinicFlow.Api.Models;
 using System.Reflection.Metadata.Ecma335;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
+using ClinicFlow.Api.Domain.Entities;
+using ClinicFlow.Api.Application.DTOs.Appointments;
 
 
 namespace ClinicFlow.Api.Controllers;
@@ -80,24 +81,82 @@ public class AppointmentsController : ControllerBase
     public async Task<IActionResult> Get()
     {
         var list = await _db.Appointments
+            .Include(a => a.Doctor)
             .OrderByDescending(a => a.StartTime)
+            .Select(a => new
+            {
+                a.Id,
+                a.PatientName,
+                a.DoctorId,
+                DoctorName = a.Doctor != null ? a.Doctor.Name : "",
+                DoctorSpecialty = a.Doctor != null ? a.Doctor.Specialty : "",
+                a.StartTime,
+                a.EndTime,
+                a.Status
+            })
             .ToListAsync();
-
         return Ok(list);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] Appointment input)
+    public async Task<IActionResult> Create([FromBody] CreateAppointmentDto dto)
     {
-        if (input.EndTime <= input.StartTime)
+        if (dto.EndTime <= dto.StartTime)
         {
             return BadRequest("EndTime must be later than StartTime");
         }
 
-        _db.Appointments.Add(input);
+        var doctorExists = await _db.Doctors.AnyAsync(d => d.Id == dto.DoctorId);
+        if(!doctorExists)
+        {
+            return BadRequest("DoctorId does not exist.");
+        }
+
+        var hasConflict = await _db.Appointments
+            .Where(a => a.DoctorId == dto.DoctorId
+                        && a.Status != "Cancelled"
+                        && (
+                            (dto.StartTime >= a.StartTime && dto.StartTime < a.EndTime) ||
+                            (dto.EndTime > a.StartTime && dto.EndTime <= a.EndTime) ||
+                            (dto.StartTime <= a.StartTime && dto.EndTime >= a.EndTime)
+                        ))
+            .AnyAsync();
+
+        if (hasConflict)
+        {
+            return Conflict(new { message = "This time slot is already booked for the selected doctor." });
+        }
+
+        var appointment = new Appointment
+        {
+            PatientName = dto.PatientName,
+            DoctorId = dto.DoctorId,
+            StartTime = dto.StartTime,
+            EndTime = dto.EndTime,
+            Status = dto.Status
+        };
+
+        _db.Appointments.Add(appointment);
         await _db.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(Get), new { id = input.Id }, input);
+        
+        var result = await _db.Appointments
+            .Include(a => a.Doctor)
+            .Where(a => a.Id == appointment.Id)
+            .Select(a => new
+            {
+                a.Id,
+                a.PatientName,
+                a.DoctorId,
+                DoctorName = a.Doctor != null ? a.Doctor.Name : "",
+                DoctorSpecialty = a.Doctor != null ? a.Doctor.Specialty : "",
+                a.StartTime,
+                a.EndTime,
+                a.Status
+            })
+            .FirstOrDefaultAsync();
+
+        return CreatedAtAction(nameof(Get), new { id = appointment.Id }, result);
     }
 
     [Authorize(Roles = "Admin")]
