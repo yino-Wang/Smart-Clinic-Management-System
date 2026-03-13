@@ -37,14 +37,14 @@ A full-stack clinic managem- **Smart Appointment Scheduling**:
 - Integrated routing for separated logical views (Dashboard, Appointments, Patients, Doctors, etc.).
 
 ### Appointments Management
-<img src="./Frontend/clinicflow-web/docs/newAppointment.png" width="600" alt="Appointments View">
+<img src="./Frontend/clinicflow-web/docs/allAppointments.png" width="600" alt="Appointments View">
 
 - **List View**: Display all appointments in an elegant table.
 - **Calendar View**: Interactive, dynamic calendar to visualize monthly appointments. Features date switching (prev/next month), highlighting 'Today', and rendering color-coded appointment badges directly on the calendar grid.
 
 
 - **Smart Appointment Scheduling**: 
-<img src="./Frontend/clinicflow-web/docs/allAppointments.png" width="600" alt="New Appointment">
+<img src="./Frontend/clinicflow-web/docs/newAppointment.png" width="600" alt="New Appointment">
 
   - **Patient Selection**: Dropdown to easily select existing patients, dynamically rendering their profile details (DOB, Contact, Gender) instantly.
   - **Doctor Availability**: Dynamically fetches and visualizes unavailable (already booked) time slots based on the selected doctor and date.

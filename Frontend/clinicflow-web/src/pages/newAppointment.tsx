@@ -27,11 +27,18 @@ export default function NewAppointment() {
 
   const [form, setForm] = useState<CreateAppointmentDto>(() => {
     const now = new Date();
+    const startObj = new Date(now.getTime() + 10 * 60 * 1000);
+    const endObj = new Date(now.getTime() + 40 * 60 * 1000);
+    
+    // We send naive local date strings to prevent unwanted UTC shifts in SQLite backend
+    const pad = (n: number) => String(n).padStart(2, "0");
+    const toNaiveISO = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}:00`;
+
     return {
       patientName: "", 
       doctorId: null,
-      startTime: new Date(now.getTime() + 10 * 60 * 1000).toISOString(),
-      endTime: new Date(now.getTime() + 40 * 60 * 1000).toISOString(),
+      startTime: toNaiveISO(startObj),
+      endTime: toNaiveISO(endObj),
       status: "Scheduled",
     };
   });
@@ -168,11 +175,11 @@ export default function NewAppointment() {
 
             <div>
               <label style={{ display: "block", marginBottom: 8, fontWeight: 500, color: "#334155" }}>Start Time</label>
-              <input type="datetime-local" value={toLocalInputValue(new Date(form.startTime))} onChange={(e) => setForm(p => ({...p, startTime: new Date(e.target.value).toISOString()}))} style={{ width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid #cbd5e1", boxSizing: "border-box", outline: "none", fontSize: "14px" }} />
+              <input type="datetime-local" value={toLocalInputValue(new Date(form.startTime))} onChange={(e) => setForm(p => ({...p, startTime: e.target.value}))} style={{ width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid #cbd5e1", boxSizing: "border-box", outline: "none", fontSize: "14px" }} />
             </div>
             <div>
               <label style={{ display: "block", marginBottom: 8, fontWeight: 500, color: "#334155" }}>End Time</label>
-              <input type="datetime-local" value={toLocalInputValue(new Date(form.endTime))} onChange={(e) => setForm(p => ({...p, endTime: new Date(e.target.value).toISOString()}))} style={{ width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid #cbd5e1", boxSizing: "border-box", outline: "none", fontSize: "14px" }} />
+              <input type="datetime-local" value={toLocalInputValue(new Date(form.endTime))} onChange={(e) => setForm(p => ({...p, endTime: e.target.value}))} style={{ width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid #cbd5e1", boxSizing: "border-box", outline: "none", fontSize: "14px" }} />
             </div>
             
             <div style={{ gridColumn: "1 / -1" }}>
