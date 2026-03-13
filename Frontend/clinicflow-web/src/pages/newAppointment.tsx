@@ -93,7 +93,7 @@ export default function NewAppointment() {
         title="New Appointment" 
         description="Create a new appointment for a patient." 
       />
-      <div style={{ padding: "32px", maxWidth: "800px" }}>
+      <div style={{ padding: "32px" }}>
         <div style={{ background: "white", padding: "32px", borderRadius: "12px", border: "1px solid #e2e8f0", boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.05)" }}>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
             <div style={{ gridColumn: "1 / -1" }}>

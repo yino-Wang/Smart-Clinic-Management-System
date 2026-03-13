@@ -155,7 +155,6 @@ export default function EditPatient(){
       )}
 
       <div style={{
-          maxWidth: "800px",
           borderRadius: "16px",
           border: "1px solid #e2e8f0",
           backgroundColor: "#fff",

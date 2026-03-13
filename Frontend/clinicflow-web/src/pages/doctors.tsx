@@ -72,7 +72,7 @@ export default function DoctorsPage() {
         }
       />
 
-      <div style={{ padding: "32px", maxWidth: "1200px" }}>
+      <div style={{ padding: "32px" }}>
         {error && (
           <p style={{ color: "crimson", background: "#fee2e2", padding: "12px", borderRadius: "8px", border: "1px solid #fca5a5", marginBottom: "24px" }}>
             {error}

@@ -53,7 +53,7 @@ export default function Appointments() {
         }
       />
       
-      <div style={{ padding: "32px", maxWidth: "1200px" }}>
+      <div style={{ padding: "32px" }}>
         {error && <p style={{ color: "crimson", marginBottom: 16 }}>{error}</p>}
         {loading ? (
           <p>Loading...</p>

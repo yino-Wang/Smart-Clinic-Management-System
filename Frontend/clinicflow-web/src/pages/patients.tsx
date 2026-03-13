@@ -80,7 +80,7 @@ export default function PatientsPage() {
         }
       />
 
-      <div style={{ padding: "32px", maxWidth: "1200px" }}>
+      <div style={{ padding: "32px" }}>
         
         {/* Search */}
         <div style={{ marginBottom: "24px" }}>
