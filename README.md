@@ -38,23 +38,31 @@ A full-stack clinic management - **Smart Appointment Scheduling**:
 - Integrated routing for separated logical views (Dashboard, Appointments, Patients, Doctors, etc.).
 
 ### Login Page
-<img src="./Frontend/clinicflow-web/docs/login.png" width="600" alt="Appointments View">
+<p align="center">
+  <img src="./Frontend/clinicflow-web/docs/login.png" width="600" alt="Login Page">
+</p>
 
 ### Register Page
-<img src="./Frontend/clinicflow-web/docs/register.png" width="600" alt="Appointments View">
+<p align="center">
+  <img src="./Frontend/clinicflow-web/docs/register.png" width="600" alt="Register Page">
+</p>
 
 - **Select Portal**: Care Team (User) and Administrator (Admin)
 - **Admin Portal**: Require Admin Code (CF-ADMIN-2024)
 
 ### Appointments Management
-<img src="./Frontend/clinicflow-web/docs/allAppointments.png" width="600" alt="Appointments View">
+<p align="center">
+  <img src="./Frontend/clinicflow-web/docs/allAppointments.png" width="600" alt="Appointments View">
+</p>
 
 - **List View**: Display all appointments in an elegant table.
 - **Calendar View**: Interactive, dynamic calendar to visualize monthly appointments. Features date switching (prev/next month), highlighting 'Today', and rendering color-coded appointment badges directly on the calendar grid.
 
 
-- **Smart Appointment Scheduling**: 
-<img src="./Frontend/clinicflow-web/docs/newAppointment.png" width="600" alt="New Appointment">
+- **Smart Appointment Scheduling**:
+<p align="center"> 
+  <img src="./Frontend/clinicflow-web/docs/newAppointment.png" width="600" alt="New Appointment">
+</p>
 
   - **Patient Selection**: Dropdown to easily select existing patients, dynamically rendering their profile details (DOB, Contact, Gender) instantly.
   - **Doctor Availability**: Dynamically fetches and visualizes unavailable (already booked) time slots based on the selected doctor and date.
@@ -62,21 +70,27 @@ A full-stack clinic management - **Smart Appointment Scheduling**:
 - **Manage Appointments**: Update status or instantly drop (delete) appointments.
 
 ### Patients Management
-<img src="./Frontend/clinicflow-web/docs/patients.png" width="600" alt="Patients View">
+<p align="center">
+  <img src="./Frontend/clinicflow-web/docs/patients.png" width="600" alt="Patients View">
+</p>
 
 - **List View**: Display all registered patients in a clean, modern table matching the app's visual identity. Includes search/filtering by name, phone, email, and gender.
 - **Create Patient**: Highly polished data entry form for easily adding new patients into the clinic domain.
 - **Edit & Delete**: Full lifecycle management of patient profiles, integrated seamlessly into the list view.
 
 ### Doctors Management
-<img src="./Frontend/clinicflow-web/docs/doctors.png" width="600" alt="Doctors View">
+<p align="center">
+  <img src="./Frontend/clinicflow-web/docs/doctors.png" width="600" alt="Doctors View">
+</p>
 
 - **List View**: Staff directory with profile photos, availability schedules, contact information and specialties.
 - **Create Doctor**: Form optimized for entering staff details, including URL attachment for profile pictures.
 - **Edit & Delete**: Robust management capabilities to keep clinic staff data synced and updated.
 
 ### Settings & Configuration
-<img src="./Frontend/clinicflow-web/docs/settings.png" width="600" alt="Settings View">
+<p align="center">
+  <img src="./Frontend/clinicflow-web/docs/settings.png" width="600" alt="Settings View">
+</p>
 
 - **Account Profile**: View the signed-in identity, change your password, or switch accounts without refreshing the browser.
 - **Clinic Preferences**: Fully wired to the backend — update business hours, slot durations, and notification defaults (admin-only, persisted via the Settings API).
