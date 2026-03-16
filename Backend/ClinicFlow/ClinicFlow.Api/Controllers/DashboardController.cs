@@ -1,7 +1,5 @@
 ﻿using ClinicFlow.Api.Application.DTOs.Dashboard;
 using ClinicFlow.Api.Data;
-using global::ClinicFlow.Api.Application.DTOs;
-using global::ClinicFlow.Api.Data;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
