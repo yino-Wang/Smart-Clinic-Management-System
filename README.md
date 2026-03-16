@@ -1,6 +1,7 @@
-# ClinicFlow 🏥
 
-A full-stack clinic managem- **Smart Appointment Scheduling**: 
+# ClinicFlow- Smart Clinic Management System
+
+A full-stack clinic management - **Smart Appointment Scheduling**: 
 <br/>
 <p align="center">
   <img src="./Frontend/clinicflow-web/docs/dashboard.png" width="800" alt="ClinicFlow Dashboard">
@@ -35,6 +36,15 @@ A full-stack clinic managem- **Smart Appointment Scheduling**:
 - Global application layout with a collapsible sidebar and unified topbar.
 - Responsive, clean, and modern styling (gradients, card shadows, rounded aesthetics) entirely built with inline React styles.
 - Integrated routing for separated logical views (Dashboard, Appointments, Patients, Doctors, etc.).
+
+### Login Page
+<img src="./Frontend/clinicflow-web/docs/login.png" width="600" alt="Appointments View">
+
+### Register Page
+<img src="./Frontend/clinicflow-web/docs/register.png" width="600" alt="Appointments View">
+
+- **Select Portal**: Care Team (User) and Administrator (Admin)
+- **Admin Portal**: Require Admin Code (CF-ADMIN-2024)
 
 ### Appointments Management
 <img src="./Frontend/clinicflow-web/docs/allAppointments.png" width="600" alt="Appointments View">
