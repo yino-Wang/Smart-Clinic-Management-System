@@ -169,6 +169,39 @@ export default function PatientsPage() {
             </table>
           </div>
         )}
+
+        {viewPatient && (
+          <div
+            style={{
+              marginTop: "24px",
+              background: "white",
+              borderRadius: "12px",
+              border: "1px solid #e2e8f0",
+              boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)",
+              padding: "24px",
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+              <div>
+                <h3 style={{ margin: 0, color: "#1e293b" }}>{viewPatient.name}</h3>
+                <p style={{ margin: "4px 0 0", color: "#64748b", fontSize: "14px" }}>Detailed view</p>
+              </div>
+              <button
+                onClick={() => setViewPatient(null)}
+                style={{ border: "none", background: "transparent", color: "#64748b", cursor: "pointer", fontSize: "14px" }}
+              >
+                Close
+              </button>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px", fontSize: "14px", color: "#334155" }}>
+              <div><strong>Gender:</strong> {viewPatient.gender || "-"}</div>
+              <div><strong>DOB:</strong> {viewPatient.dateOfBirth ? new Date(viewPatient.dateOfBirth).toLocaleDateString() : "-"}</div>
+              <div><strong>Phone:</strong> {viewPatient.phone || "-"}</div>
+              <div><strong>Email:</strong> {viewPatient.email || "-"}</div>
+              <div style={{ gridColumn: "1 / -1" }}><strong>Notes:</strong> {viewPatient.notes || "No notes"}</div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

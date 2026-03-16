@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getPatients, updatePatient, CreatePatientDto, getPatientById } from "../api/patients";
+import { updatePatient, CreatePatientDto, getPatientById } from "../api/patients";
 import Topbar from "../components/topbar";
 
 export default function EditPatient(){

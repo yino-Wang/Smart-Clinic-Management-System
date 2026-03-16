@@ -1,20 +1,39 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { login as loginApi } from "../api/auth";
 import { useAuth } from "../context/authContext";
 
 export default function Login() {
-  const [username, setUsername] = useState("admin");
-  const [password, setPassword] = useState("admin123");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const {login} = useAuth();
+  const [success, setSuccess] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  async function onSubmit() {
+  useEffect(() => {
+    const navState = location.state as { registeredUsername?: string } | undefined;
+    if (navState?.registeredUsername) {
+      setSuccess(`Account ${navState.registeredUsername} created successfully. Please sign in.`);
+      navigate("/login", { replace: true, state: {} });
+    }
+  }, [location.state, navigate]);
+
+  async function onSubmit(e?: React.FormEvent) {
+    e?.preventDefault();
     setError("");
+    setIsSubmitting(true);
     try {
-      const data = await loginApi(username, password);
+      const data = await loginApi(username.trim(), password);
       login(data.accessToken, data.role);
+      navigate("/");
     } catch (e: any) {
-      setError(e?.response?.data ?? "Login failed");
+      const message = e?.response?.data ?? "Login failed";
+      setError(typeof message === "string" ? message : "Login failed");
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -31,7 +50,7 @@ export default function Login() {
 
       {/* ===== CENTER LOGIN ===== */}
       <div style={styles.centerWrapper}>
-        <div style={styles.card}>
+        <form style={styles.card} onSubmit={onSubmit}>
           <div style={styles.logo}>ClinicFlow</div>
           <h2 style={styles.title}>Sign in to your account</h2>
 
@@ -51,15 +70,22 @@ export default function Login() {
           />
 
           {error && <div style={styles.error}>{String(error)}</div>}
+          {success && <div style={styles.success}>{success}</div>}
 
-          <button onClick={onSubmit} style={styles.button}>
-            Login
+          <button type="submit" style={styles.button} disabled={isSubmitting}>
+            {isSubmitting ? "Signing in..." : "Login"}
           </button>
 
           <div style={styles.demo}>
             Demo users: admin/admin123, user/user123
           </div>
-        </div>
+          <div style={styles.footerLinks}>
+            <span>Need an account?</span>
+            <Link to="/register" style={styles.link}>
+              Create one
+            </Link>
+          </div>
+        </form>
       </div>
 
       {/* ===== FOOTER ===== */}
@@ -182,11 +208,35 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 13,
   },
 
+  success: {
+    background: "#ecfdf5",
+    color: "#047857",
+    padding: 10,
+    borderRadius: 6,
+    marginBottom: 12,
+    fontSize: 13,
+  },
+
   demo: {
     marginTop: 20,
     fontSize: 12,
     opacity: 0.6,
     textAlign: "center",
+  },
+
+  footerLinks: {
+    marginTop: 24,
+    display: "flex",
+    justifyContent: "center",
+    gap: 8,
+    fontSize: 14,
+    color: "#475569",
+  },
+
+  link: {
+    color: "#2b5876",
+    fontWeight: 600,
+    textDecoration: "none",
   },
 
   /* FOOTER */

@@ -1,8 +1,11 @@
 import { useState } from "react";
 import Sidebar from "./sidebar";
+import { useAuth } from "../context/authContext";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
+  const { username } = useAuth();
+  const initials = (username ?? "CF").slice(0, 2).toUpperCase();
 
   return (
     <div style={{ display: "flex", minHeight: "100vh", width: "100vw", margin: 0 }}>
@@ -20,7 +23,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <input type="text" placeholder="Search..." style={{ padding: "8px 16px", borderRadius: 20, border: "1px solid #cbd5e1", outline: "none", fontSize: "14px", width: "200px" }} />
             <div style={{ cursor: "pointer", fontSize: 18 }}>🔔</div>
             <div style={{ width: 32, height: 32, borderRadius: "50%", backgroundColor: "#2b5876", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", fontSize: 12 }}>
-              ADM
+              {initials}
             </div>
           </div>
         </header>

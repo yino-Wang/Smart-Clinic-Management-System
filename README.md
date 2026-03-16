@@ -68,14 +68,13 @@ A full-stack clinic managem- **Smart Appointment Scheduling**:
 ### Settings & Configuration
 <img src="./Frontend/clinicflow-web/docs/settings.png" width="600" alt="Settings View">
 
-- **Account Profile**: Overview of logged-in user credentials and roles.
-- **Clinic Preferences**: Manage global business rules like operating hours, default time slots, and UI notification preferences (Frontend Mock).
+- **Account Profile**: View the signed-in identity, change your password, or switch accounts without refreshing the browser.
+- **Clinic Preferences**: Fully wired to the backend — update business hours, slot durations, and notification defaults (admin-only, persisted via the Settings API).
 
 ## TODO 🚀
-- **Settings API Integration**: 
-  - Connect "Change Password" and "Switch Account" to backend Auth endpoints.
-  - Persist Global Clinic Preferences (Business Hours, Time Slots) to the database to sync across all staff users.
 - **Reporting System**: Export patient and appointment lists to CSV or PDF options for admin users.
+- **Usage Analytics**: Surface lightweight charts for patient registrations and appointment throughput.
+- **Notifications Hub**: Allow admins to broadcast announcements to all active accounts.
 
 ## Project Structure
 - clinicflow
@@ -91,7 +90,10 @@ A full-stack clinic managem- **Smart Appointment Scheduling**:
 ```bash
 cd backend/ClinicFlow.Api
 dotnet run
+```
 
+### Frontend
+```bash
 cd frontend/clinicflow-web
 npm install
 npm run dev
