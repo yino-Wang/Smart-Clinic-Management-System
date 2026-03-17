@@ -1,6 +1,7 @@
 import { NavLink, useLocation } from "react-router-dom";
 import { useMemo, useState } from "react";
-import { useAuth } from "../context/authContext"; 
+import { useAuth } from "../context/authContext";
+import { ADMIN_PORTAL_PREFIX, USER_PORTAL_PREFIX } from "../routes/paths";
 
 type NavItem = {
   label: string;
@@ -9,53 +10,79 @@ type NavItem = {
   children?: { label: string; path: string }[];
 };
 
-export default function Sidebar({ collapsed, setCollapsed }: { collapsed: boolean, setCollapsed: (val: boolean) => void }) {
-  const { logout } = useAuth();
+export default function Sidebar({ collapsed, setCollapsed }: { collapsed: boolean; setCollapsed: (val: boolean) => void }) {
+  const { logout, role } = useAuth();
   const location = useLocation();
 
   const [openAppointments, setOpenAppointments] = useState(true);
 
-  const navItems: NavItem[] = useMemo(
-    () => [
+  const isAdmin = (role || "").toLowerCase() === "admin";
+
+  const navItems: NavItem[] = useMemo(() => {
+    if (isAdmin) {
+      return [
+        {
+          label: "Dashboard",
+          path: `${ADMIN_PORTAL_PREFIX}/dashboard`,
+          icon: <span className="text-lg">🏠</span>,
+        },
+        {
+          label: "Appointments",
+          icon: <span className="text-lg">📅</span>,
+          children: [
+            { label: "All Appointments", path: `${ADMIN_PORTAL_PREFIX}/appointments` },
+            { label: "New Appointment", path: `${ADMIN_PORTAL_PREFIX}/appointments/new` },
+          ],
+        },
+        {
+          label: "Patients",
+          path: `${ADMIN_PORTAL_PREFIX}/patients`,
+          icon: <span className="text-lg">👥</span>,
+        },
+        {
+          label: "Doctors",
+          path: `${ADMIN_PORTAL_PREFIX}/doctors`,
+          icon: <span className="text-lg">🧑‍⚕️</span>,
+        },
+        {
+          label: "Reports",
+          path: `${ADMIN_PORTAL_PREFIX}/reports`,
+          icon: <span className="text-lg">📊</span>,
+        },
+        {
+          label: "Clinic Settings",
+          path: `${ADMIN_PORTAL_PREFIX}/settings`,
+          icon: <span className="text-lg">⚙️</span>,
+        },
+      ];
+    }
+
+    return [
       {
         label: "Dashboard",
-        path: "/",
+        path: `${USER_PORTAL_PREFIX}/dashboard`,
         icon: <span className="text-lg">🏠</span>,
       },
       {
-        label: "Appointments",
-        icon: <span className="text-lg">📅</span>,
-        children: [
-          { label: "All Appointments", path: "/appointments" },
-          { label: "New Appointment", path: "/appointments/new" },
-        ],
-      },
-      {
-        label: "Patients",
-        path: "/patients",
-        icon: <span className="text-lg">👥</span>,
-      },
-      {
         label: "Doctors",
-        path: "/doctors",
+        path: `${USER_PORTAL_PREFIX}/doctors`,
         icon: <span className="text-lg">🧑‍⚕️</span>,
       },
       {
-        label: "Reports",
-        path: "/reports",
-        icon: <span className="text-lg">📊</span>,
+        label: "My Appointments",
+        path: `${USER_PORTAL_PREFIX}/my-appointments`,
+        icon: <span className="text-lg">📅</span>,
       },
       {
         label: "Settings",
-        path: "/settings",
+        path: `${USER_PORTAL_PREFIX}/settings`,
         icon: <span className="text-lg">⚙️</span>,
       },
-    ],
-    []
-  );
+    ];
+  }, [isAdmin]);
 
-  // 当前路由是否在 appointments 区域内（用于自动高亮/展开）
-  const isInAppointments = location.pathname.startsWith("/appointments");
+  // Determine if the current route belongs to the appointments section (auto highlight/expand)
+  const isInAppointments = isAdmin && location.pathname.startsWith(`${ADMIN_PORTAL_PREFIX}/appointments`);
 
   return (
     <aside
@@ -185,7 +212,7 @@ export default function Sidebar({ collapsed, setCollapsed }: { collapsed: boolea
             );
           }
 
-          // 普通 item
+          // Regular item
           return (
             <NavLink
               key={item.label}

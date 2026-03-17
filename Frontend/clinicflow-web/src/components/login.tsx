@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { login as loginApi } from "../api/auth";
 import { useAuth } from "../context/authContext";
+import { ADMIN_DASHBOARD_ROUTE, USER_DASHBOARD_ROUTE } from "../routes/paths";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -27,8 +28,9 @@ export default function Login() {
     setIsSubmitting(true);
     try {
       const data = await loginApi(username.trim(), password);
-      login(data.accessToken, data.role);
-      navigate("/");
+  login(data.accessToken, data.role);
+  const target = (data.role || "").toLowerCase() === "admin" ? ADMIN_DASHBOARD_ROUTE : USER_DASHBOARD_ROUTE;
+  navigate(target, { replace: true });
     } catch (e: any) {
       const message = e?.response?.data ?? "Login failed";
       setError(typeof message === "string" ? message : "Login failed");

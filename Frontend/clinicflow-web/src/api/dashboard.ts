@@ -49,6 +49,21 @@ export interface RecentPatient {
   email: string;
 }
 
+export interface UserDashboardOverview {
+  upcomingAppointments: number;
+  lastVisit: string | null;
+  nextAppointment: {
+    doctorName: string;
+    startTime: string;
+    note?: string;
+  } | null;
+  tips: string[];
+  cta: {
+    label: string;
+    href: string;
+  };
+}
+
 export async function getDashboardOverview(): Promise<DashboardOverview> {
   const res = await api.get("/api/dashboard/overview");
   return res.data;
@@ -61,5 +76,10 @@ export async function getDoctorWorkload(): Promise<DoctorWorkload[]> {
 
 export async function getRecentPatients(): Promise<RecentPatient[]> {
   const res = await api.get("/api/dashboard/recent-patients");
+  return res.data;
+}
+
+export async function getUserDashboardOverview(): Promise<UserDashboardOverview> {
+  const res = await api.get("/api/dashboard/user-overview");
   return res.data;
 }

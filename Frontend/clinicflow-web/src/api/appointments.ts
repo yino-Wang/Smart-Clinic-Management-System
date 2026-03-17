@@ -42,3 +42,8 @@ export async function getDoctorBookedSlots(doctorId: number, date: string) {
   const res = await api.get(`/api/Appointments/doctor/${doctorId}/date/${date}`);
   return res.data; // array of { startTime, endTime }
 }
+
+export async function getMyAppointments() {
+  const res = await api.get("/api/Appointments/my");
+  return res.data as Appointment[];
+}
