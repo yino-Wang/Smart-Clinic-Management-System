@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using ClinicFlow.Api.Domain.Entities;
 
 namespace ClinicFlow.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class AppointmentsController : ControllerBase
@@ -18,6 +20,7 @@ public class AppointmentsController : ControllerBase
         _db = db;
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet]
     public async Task<IActionResult> Get()
     {
@@ -66,6 +69,35 @@ public class AppointmentsController : ControllerBase
         return Ok(bookedSlots);
     }
 
+    [HttpGet("my")]
+    public async Task<IActionResult> GetMyAppointments()
+    {
+        var userIdValue = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userIdValue))
+        {
+            return Unauthorized();
+        }
+
+        var userId = int.Parse(userIdValue);
+
+        var appointments = await _db.Appointments
+            .Include(a => a.Doctor)
+            .Where(a => a.UserId == userId)
+            .OrderBy(a => a.StartTime)
+            .Select(a => new
+            {
+                a.Id,
+                a.PatientName,
+                DoctorName = a.Doctor != null ? a.Doctor.Name : string.Empty,
+                a.StartTime,
+                a.EndTime,
+                a.Status
+            })
+            .ToListAsync();
+
+        return Ok(appointments);
+    }
+
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateAppointmentDto dto)
     {
@@ -93,13 +125,21 @@ public class AppointmentsController : ControllerBase
             return Conflict(new { message = "This time slot is already booked for the selected doctor." });
         }
 
+        int? userId = null;
+        var userIdValue = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (int.TryParse(userIdValue, out var parsedUserId))
+        {
+            userId = parsedUserId;
+        }
+
         var appointment = new Appointment
         {
             PatientName = dto.PatientName,
             DoctorId = dto.DoctorId,
             StartTime = dto.StartTime,
             EndTime = dto.EndTime,
-            Status = dto.Status
+            Status = dto.Status,
+            UserId = userId
         };
 
         _db.Appointments.Add(appointment);
@@ -141,6 +181,7 @@ public class AppointmentsController : ControllerBase
 
     public record UpdateStatusDto(string Status);
 
+    [Authorize(Roles = "Admin")]
     [HttpPatch("{id:int}/status")]
     public async Task<IActionResult> UpdateStatus(int id, [FromBody] UpdateStatusDto dto)
     {

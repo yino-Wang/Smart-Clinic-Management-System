@@ -18,6 +18,12 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<Appointment>()
+            .HasOne(a => a.User)
+            .WithMany()
+            .HasForeignKey(a => a.UserId)
+            .OnDelete(DeleteBehavior.SetNull);
+
         modelBuilder.Entity<ClinicPreference>().HasData(new ClinicPreference
         {
             Id = 1,

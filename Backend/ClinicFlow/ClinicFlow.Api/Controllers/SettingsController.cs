@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ClinicFlow.Api.Controllers;
 
+[Authorize(Roles = "Admin")]
 [ApiController]
 [Route("api/[controller]")]
 public class SettingsController : ControllerBase

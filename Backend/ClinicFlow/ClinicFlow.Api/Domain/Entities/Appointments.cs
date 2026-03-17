@@ -24,4 +24,8 @@ public class Appointment
     public string Status { get; set; } = "Scheduled";
 
     public Doctor? Doctor { get; set; } //check relevant to doctorId
+
+    public int? UserId { get; set; }
+
+    public UserAccount? User { get; set; }
 }

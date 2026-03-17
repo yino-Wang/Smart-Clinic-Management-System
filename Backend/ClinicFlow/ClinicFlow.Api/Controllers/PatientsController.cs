@@ -3,9 +3,11 @@ using ClinicFlow.Api.Domain.Entities.Patient;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ClinicFlow.Api.Application.DTOs.Patients;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ClinicFlow.Api.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [ApiController]
     [Route("api/[controller]")]
     public class PatientsController : ControllerBase
