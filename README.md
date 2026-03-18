@@ -50,6 +50,33 @@ A full-stack clinic management - **Smart Appointment Scheduling**:
 - **Select Portal**: Care Team (User) and Administrator (Admin)
 - **Admin Portal**: Require Admin Code (CF-ADMIN-2024)
 
+## Admin Portal
+### Dashboard
+<p align="center">
+  <img src="./Frontend/clinicflow-web/docs/dashboard.png" width="800" alt="ClinicFlow Dashboard">
+</p>
+
+#### Key Features
+- **Total Patients**: Displays the total number of registered patients in the system.
+- **Today's Appointments**: Shows the number of appointments scheduled for today.
+- **Pending Today**: Indicates how many appointments are still pending.
+- **Active Doctors**: Displays the number of doctors currently with active appointments.
+
+#### Data Visualization
+- **Weekly Appointment Trend**:
+  - Line chart showing trends of total, completed, and cancelled appointments.
+  - Helps identify peak days and workload patterns.
+
+#### Operational Insights
+- **Doctor Workload (Today)**:
+  - Displays each doctor’s appointments (pending, completed, total).
+  - Useful for workload balancing.
+
+- **Upcoming Today**:
+  - Lists upcoming appointments with patient and doctor info.
+
+- **Recently Added Patients**:
+  - Displays newly registered patients for quick access.
 ### Appointments Management
 <p align="center">
   <img src="./Frontend/clinicflow-web/docs/allAppointments.png" width="600" alt="Appointments View">
@@ -59,7 +86,7 @@ A full-stack clinic management - **Smart Appointment Scheduling**:
 - **Calendar View**: Interactive, dynamic calendar to visualize monthly appointments. Features date switching (prev/next month), highlighting 'Today', and rendering color-coded appointment badges directly on the calendar grid.
 
 
-- **Smart Appointment Scheduling**:
+### New Appointment
 <p align="center"> 
   <img src="./Frontend/clinicflow-web/docs/newAppointment.png" width="600" alt="New Appointment">
 </p>
@@ -94,6 +121,59 @@ A full-stack clinic management - **Smart Appointment Scheduling**:
 
 - **Account Profile**: View the signed-in identity, change your password, or switch accounts without refreshing the browser.
 - **Clinic Preferences**: Fully wired to the backend — update business hours, slot durations, and notification defaults (admin-only, persisted via the Settings API).
+
+## User Portal
+### Dashboard
+<p align="center">
+  <img src="./Frontend/clinicflow-web/docs/userDashboard.png" width="600" alt="User Dashboard">
+</p>
+The Personal Dashboard provides a quick overview of user activity and upcoming visits.
+
+#### Key Features
+- **Upcoming Appointments**: Displays upcoming visits for the user.
+- **Last Visit**: Shows the most recent visit record.
+- **Clinic Tips**: Provides helpful health and clinic-related tips.
+
+#### Quick Access
+- **Next Appointment**:
+  - Displays the next scheduled appointment with doctor and time.
+  - Includes a shortcut to view all appointments.
+
+- **Book Appointment**:
+  - Allows users to quickly navigate to booking a new visit.
+
+### My Appointments
+<p align="center">
+  <img src="./Frontend/clinicflow-web/docs/myAppointment.png" width="600" alt="My Appointments">
+</p>
+This page allows users to view and manage all their appointments.
+
+#### Key Features
+- **Upcoming Appointments**: Displays all future scheduled visits.
+- **Appointment History**: Shows past appointments with details.
+
+#### Appointment Details
+- Includes doctor name, appointment time, and status.
+- Helps users track and manage their visit history.
+
+### New Appointment (Book Visit)
+<p align="center">
+  <img src="./Frontend/clinicflow-web/docs/userBookVisit.png" width="600" alt="My Appointments">
+</p>
+This feature allows users to schedule a new appointment with a doctor.
+
+#### Key Features
+- **Doctor Selection**: Choose from available doctors.
+- **Time Selection**: Select preferred date and time slots.
+
+#### Booking Process
+- Submit a booking request through the form.
+- The system records and manages the appointment efficiently.
+
+### Doctor
+<p align="center">
+  <img src="./Frontend/clinicflow-web/docs/doctors.png" width="600" alt="Dcotor View">
+</p>
 
 ## TODO 🚀
 - **Reporting System**: Export patient and appointment lists to CSV or PDF options for admin users.
