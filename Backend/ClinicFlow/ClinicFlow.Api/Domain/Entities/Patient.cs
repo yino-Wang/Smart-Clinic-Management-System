@@ -25,5 +25,7 @@ namespace ClinicFlow.Api.Domain.Entities.Patient
         public string Email { get; set; } = "";
 
         public string? Notes { get; set; }
+
+        public DateTime RegisteredAt { get; set; } = DateTime.UtcNow;
     }
 }

@@ -25,5 +25,7 @@ namespace ClinicFlow.Api.Application.DTOs.Patients
         public string Email { get; set; } = "";
 
         public string? Notes { get; set; }
+
+        public DateTime RegisteredAt { get; set; }
     }
 }

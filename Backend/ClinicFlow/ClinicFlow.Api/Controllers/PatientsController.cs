@@ -31,7 +31,8 @@ namespace ClinicFlow.Api.Controllers
                                 DateOfBirth = p.DateOfBirth,
                                 Phone = p.Phone,
                                 Email = p.Email,
-                                Notes = p.Notes
+                    Notes = p.Notes,
+                    RegisteredAt = p.RegisteredAt
                             })
                             .ToListAsync();
 
@@ -56,7 +57,8 @@ namespace ClinicFlow.Api.Controllers
                 DateOfBirth = patient.DateOfBirth,
                 Phone = patient.Phone,
                 Email = patient.Email,
-                Notes = patient.Notes
+                Notes = patient.Notes,
+                RegisteredAt = patient.RegisteredAt
             };
 
             return Ok(dto);
@@ -77,7 +79,8 @@ namespace ClinicFlow.Api.Controllers
                 DateOfBirth = dto.DateOfBirth,
                 Phone = dto.Phone,
                 Email = dto.Email,
-                Notes = dto.Notes
+                Notes = dto.Notes,
+                RegisteredAt = DateTime.UtcNow
             };
 
             _db.Patients.Add(patient);
@@ -91,7 +94,8 @@ namespace ClinicFlow.Api.Controllers
                 DateOfBirth = patient.DateOfBirth,
                 Phone = patient.Phone,
                 Email = patient.Email,
-                Notes = patient.Notes
+                Notes = patient.Notes,
+                RegisteredAt = patient.RegisteredAt
             };
 
             return CreatedAtAction(nameof(GetPatientById), new { id = patient.Id }, result);
@@ -124,7 +128,8 @@ namespace ClinicFlow.Api.Controllers
                 DateOfBirth = patient.DateOfBirth,
                 Phone = patient.Phone,
                 Email = patient.Email,
-                Notes = patient.Notes
+                Notes = patient.Notes,
+                RegisteredAt = patient.RegisteredAt
             };
 
             return Ok(result);
