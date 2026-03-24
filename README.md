@@ -114,6 +114,32 @@ A full-stack clinic management - **Smart Appointment Scheduling**:
 - **Create Doctor**: Form optimized for entering staff details, including URL attachment for profile pictures.
 - **Edit & Delete**: Robust management capabilities to keep clinic staff data synced and updated.
 
+### Reports Management
+#### Appointment Reports
+<p align="center">
+  <img src="./Frontend/clinicflow-web/docs/report.png" width="600" alt="Appointment reports">
+</p>
+
+#### Patient Reports
+
+<p align="center">
+  <img src="./Frontend/clinicflow-web/docs/report2.png" width="600" alt="Patient reports">
+</p>
+
+##### Advanced Filtering
+- Filter appointments/patients by date range, doctor, status, and time of day
+- Customize sorting (e.g., start time, ascending/descending)
+- Adjustable page size for flexible data viewing
+##### Key Metrics Dashboard
+- Total appointments/patients within selected range
+- Completion rate
+- Cancellation rate
+- Average visit duration
+##### Detailed Appointment/Patient Table
+- Supports real-time updates based on selected filters
+##### Data Export
+- Export filtered results as CSV or PDF for reporting and external analysis
+
 ### Settings & Configuration
 <p align="center">
   <img src="./Frontend/clinicflow-web/docs/settings.png" width="600" alt="Settings View">
@@ -175,11 +201,6 @@ This feature allows users to schedule a new appointment with a doctor.
   <img src="./Frontend/clinicflow-web/docs/doctors.png" width="600" alt="Dcotor View">
 </p>
 
-## TODO 🚀
-- **Reporting System**: Export patient and appointment lists to CSV or PDF options for admin users.
-- **Usage Analytics**: Surface lightweight charts for patient registrations and appointment throughput.
-- **Notifications Hub**: Allow admins to broadcast announcements to all active accounts.
-
 ## Project Structure
 - clinicflow
 - ├─ backend
@@ -203,6 +224,4 @@ npm install
 npm run dev
 ```
 
-Author
-
-Yino
+### Author - Yino
