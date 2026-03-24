@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Topbar from "../components/topbar";
 import { useAuth } from "../context/authContext";
 import { Appointment, getAppointments, updateAppointment, deleteAppointment } from "../api/appointments";
+import { ADMIN_PORTAL_PREFIX } from "../routes/paths";
 
 export default function Appointments() {
   const { role } = useAuth();
@@ -44,7 +45,7 @@ export default function Appointments() {
               Refresh
             </button>
             <Link 
-              to="/appointments/new" 
+              to={`${ADMIN_PORTAL_PREFIX}/appointments/new`}
               style={{ background: "linear-gradient(135deg, #2b5876, #4e4376)", color: "white", padding: "10px 16px", borderRadius: "8px", textDecoration: "none", fontWeight: 600, fontSize: "14px", display: "inline-block", boxShadow: "0 2px 4px rgba(43,88,118,0.2)", transition: "all 0.2s" }}
             >
               + New Appointment

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { getPatients, deletePatient, Patient } from "../api/patients";
 import Topbar from "../components/topbar";
 import { useNavigate } from "react-router-dom";
+import { ADMIN_PORTAL_PREFIX } from "../routes/paths";
 
 export default function PatientsPage() {
   const [patients, setPatients] = useState<Patient[]>([]);
@@ -72,7 +73,7 @@ export default function PatientsPage() {
             </button>
             <button 
               style={{ background: "linear-gradient(135deg, #2b5876, #4e4376)", color: "white", padding: "10px 16px", borderRadius: "8px", textDecoration: "none", border: "none", fontWeight: 600, fontSize: "14px", display: "inline-block", boxShadow: "0 2px 4px rgba(43,88,118,0.2)", cursor: "pointer", transition: "all 0.2s" }}
-              onClick={() => navigate("/patients/new")}
+              onClick={() => navigate(`${ADMIN_PORTAL_PREFIX}/patients/new`)}
             >
               + New Patient
             </button>
@@ -151,7 +152,7 @@ export default function PatientsPage() {
                             View
                           </button>
                           <button 
-                            onClick={() => navigate(`/patients/${patient.id}/edit`)}
+                            onClick={() => navigate(`${ADMIN_PORTAL_PREFIX}/patients/${patient.id}/edit`)}
                             style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", background: "white", color: "#2b5876", cursor: "pointer", fontWeight: 600, fontSize: "13px", transition: "all 0.2s" }}>
                             Edit
                           </button>
